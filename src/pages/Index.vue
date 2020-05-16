@@ -155,6 +155,7 @@ export default {
                 // handle error
             } else {
                 this.page = res.data.data.getPage
+                console.log(this.page)
             }
         }
     ).catch(e => {
