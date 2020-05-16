@@ -1,0 +1,17 @@
+type Page {
+  name: String! @unique
+  room: String! @unique
+  secret: String
+  type: PageType!
+  content: String!
+}
+
+enum PageType {
+  PUBLIC
+  PRIVATE
+}
+
+type Query {
+  allPages: [Page!]
+  findPageByName(name: String!): Page
+}
