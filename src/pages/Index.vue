@@ -3,9 +3,9 @@
     <v-container fluid>
       <v-row class="mx-auto mt-6">
         <v-col class="headline text-center" cols="12">
-            Sign off on this WALL
+            Content Collaboration
         </v-col>
-        <v-col class="mx-auto" md="8" offset-md="2">
+        <v-col class="mx-auto" md="8" offset-md="2" v-if="editor">
           <editor-menu-bar class="mx-auto" :editor="editor" v-slot="{ commands, isActive }">
             <v-btn-toggle dark multiple>
 
@@ -130,19 +130,35 @@ import {
   OrderedList, Strike, TodoItem, TodoList, Underline 
 } from 'tiptap-extensions'
 import Realtime from '@/plugins/editor/realtime.js'
+import { getPage } from '@/services/fauna/index.js'
 
 export default {
+  metaInfo: {
+    title: "WeCollab"
+  },
   components: {
     EditorContent,
     EditorMenuBar,
   },
   data() {
     return {
-      editor: null
+      editor: null,
+      page: null
     }
   },
-  mounted() {
-    if(process.isClient) {
+  async mounted() {
+    await getPage().then(
+        res => {
+            if (!res.data.data || !res.data.data.getPage) {
+                // handle error
+            } else {
+                this.page = res.data.data.getPage
+            }
+        }
+    ).catch(e => {
+      // handle error
+    })
+    if(process.isClient && this.page) {
       this.editor = new Editor({
         extensions: [
           new Blockquote(),
@@ -162,14 +178,14 @@ export default {
           new Strike(),
           new Underline(),
           new History(),
-          new Realtime(),
+          new Realtime({pageDoc: this.page})
         ],
       })
     }
   },
   beforeDestroy() {
-    this.editor.destroy()
-  },
+    if(this.editor) this.editor.destroy()
+  }
 }
 </script>
 
