@@ -4,118 +4,120 @@
       <v-row class="mx-auto mt-6">
         <v-col class="headline text-center" cols="12">
             Content Collaboration
-        </v-col>
-        <v-col class="mx-auto" md="8" offset-md="2" v-if="editor">
-          <editor-menu-bar class="mx-auto" :editor="editor" v-slot="{ commands, isActive }">
-            <v-btn-toggle dark multiple>
+          </v-col>
+          <ClientOnly>
+            <v-col class="mx-auto" md="8" offset-md="2" v-if="editor">
+              <editor-menu-bar class="mx-auto" :editor="editor" v-slot="{ commands, isActive }">
+                <v-btn-toggle dark multiple>
 
-              <v-btn
-                :class="{ 'is-active': isActive.bold() }"
-                @click="commands.bold"
-              >
-                b
-              </v-btn>
-              <v-btn
-                :class="{ 'is-active': isActive.italic() }"
-                @click="commands.italic"
-              >
-                i
-              </v-btn>
-              <v-btn
-                :class="{ 'is-active': isActive.strike() }"
-                @click="commands.strike"
-              >
-                strike
-              </v-btn>
-              <v-btn
-                :class="{ 'is-active': isActive.underline() }"
-                @click="commands.underline"
-              >
-                u
-              </v-btn>
+                  <v-btn
+                    :class="{ 'is-active': isActive.bold() }"
+                    @click="commands.bold"
+                  >
+                    b
+                  </v-btn>
+                  <v-btn
+                    :class="{ 'is-active': isActive.italic() }"
+                    @click="commands.italic"
+                  >
+                    i
+                  </v-btn>
+                  <v-btn
+                    :class="{ 'is-active': isActive.strike() }"
+                    @click="commands.strike"
+                  >
+                    strike
+                  </v-btn>
+                  <v-btn
+                    :class="{ 'is-active': isActive.underline() }"
+                    @click="commands.underline"
+                  >
+                    u
+                  </v-btn>
 
-              <v-btn
-                
-                :class="{ 'is-active': isActive.code() }"
-                @click="commands.code"
-              >
-                code
-              </v-btn>
-              <v-btn
-                
-                :class="{ 'is-active': isActive.heading({ level: 1 }) }"
-                @click="commands.heading({ level: 1 })"
-              >
-                H1
-              </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.code() }"
+                    @click="commands.code"
+                  >
+                    code
+                  </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.heading({ level: 1 }) }"
+                    @click="commands.heading({ level: 1 })"
+                  >
+                    H1
+                  </v-btn>
 
-              <v-btn
-                
-                :class="{ 'is-active': isActive.heading({ level: 2 }) }"
-                @click="commands.heading({ level: 2 })"
-              >
-                H2
-              </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.heading({ level: 2 }) }"
+                    @click="commands.heading({ level: 2 })"
+                  >
+                    H2
+                  </v-btn>
 
-              <v-btn
-                
-                :class="{ 'is-active': isActive.heading({ level: 3 }) }"
-                @click="commands.heading({ level: 3 })"
-              >
-                H3
-              </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.heading({ level: 3 }) }"
+                    @click="commands.heading({ level: 3 })"
+                  >
+                    H3
+                  </v-btn>
 
-              <v-btn
-                
-                :class="{ 'is-active': isActive.bullet_list() }"
-                @click="commands.bullet_list"
-              >
-                ul
-              </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.bullet_list() }"
+                    @click="commands.bullet_list"
+                  >
+                    ul
+                  </v-btn>
 
-              <v-btn
-                
-                :class="{ 'is-active': isActive.ordered_list() }"
-                @click="commands.ordered_list"
-              >
-                ol
-              </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.ordered_list() }"
+                    @click="commands.ordered_list"
+                  >
+                    ol
+                  </v-btn>
 
-              <v-btn
-                
-                :class="{ 'is-active': isActive.blockquote() }"
-                @click="commands.blockquote"
-              >
-                quote
-              </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.blockquote() }"
+                    @click="commands.blockquote"
+                  >
+                    quote
+                  </v-btn>
 
-              <v-btn
-                
-                :class="{ 'is-active': isActive.code_block() }"
-                @click="commands.code_block"
-              >
-                code Block
-              </v-btn>
+                  <v-btn
+                    
+                    :class="{ 'is-active': isActive.code_block() }"
+                    @click="commands.code_block"
+                  >
+                    code Block
+                  </v-btn>
 
-              <v-btn
-                
-                @click="commands.undo"
-              >
-                undo
-              </v-btn>
+                  <v-btn
+                    
+                    @click="commands.undo"
+                  >
+                    undo
+                  </v-btn>
 
-              <v-btn
-                
-                @click="commands.redo"
-              >
-                redo
-              </v-btn>
+                  <v-btn
+                    
+                    @click="commands.redo"
+                  >
+                    redo
+                  </v-btn>
 
-            </v-btn-toggle>
-          </editor-menu-bar>
+                </v-btn-toggle>
+              </editor-menu-bar>
 
-          <editor-content class="editor" :editor="editor"/>
-        </v-col>
+              <editor-content class="editor" :editor="editor"/>
+          </v-col>
+        </ClientOnly>
       </v-row>
     </v-container>
   </Layout>
@@ -182,9 +184,11 @@ export default {
         ],
       })
     }
+    console.log(this.page)
+    console.log(this.editor)
   },
   beforeDestroy() {
-    if(this.editor) this.editor.destroy()
+    if(this.editor && process.isClient) this.editor.destroy()
   }
 }
 </script>
