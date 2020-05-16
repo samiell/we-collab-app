@@ -3,61 +3,54 @@ import { Extension } from 'tiptap'
 import { redo, undo, yCursorPlugin, ySyncPlugin, yUndoPlugin } from 'y-prosemirror'
 import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
-import { getPage, updatePage } from '@/services/fauna/index.js'
-import { Base64 } from 'js-base64'
+import { updatePage } from '@/services/fauna/index.js'
+import { fromBase64, toBase64 } from '@aws-sdk/util-base64-browser'
 
-let dbDoc, provider;
-let count = 0
-count++
 const ydoc = new Y.Doc()
-
-if (process.isClient) {
-    provider = new WebrtcProvider(
-        'live-wall', ydoc, {
-            maxConns: 70 + Math.floor(Math.random() * 70),
-            password: 'afreeworld'
+const initYDoc = (page) => {
+    if (process.isClient) {
+        if (
+            typeof page.content === 'string' &&
+            page.content.length !== 0
+        ) {
+            this.page.content = fromBase64(this.page.content)
+            Y.applyUpdate(ydoc, page.content)
         }
-    )
-
-    provider.on('synced', synced => {
-        console.log('synced!', synced)
-    })
-
-    ydoc.on('beforeTransaction', async update => {
-        if (count === 1) {
-            await getPage().then(
-                res => {
-                    if (!res.data.data || !res.data.data.getPage) {
-                        console.log(res.data)
-                    } else {
-                        dbDoc = res.data.data.getPage
-                        dbDoc.content = Base64.decode(dbDoc.content)
-                    }
-                    console.log(dbDoc)
-                }
-            ).catch(e => { console.log(e) })
-            Y.applyUpdate(ydoc, dbDoc)
-            count++
-        }
-    })
-
-    ydoc.on('update', update => {
-        dbDoc.content = Base64.encode(Y.encodeStateAsUpdate(ydoc))
-        updatePage(dbDoc)
-        console.log('updated')
-    })
+        ydoc.on('update', update => {
+            page.content = toBase64(Y.encodeStateAsUpdate(ydoc))
+            updatePage(page)
+        })
+        return ydoc.getXmlFragment('prosemirror')
+    }
 }
-const type = ydoc.getXmlFragment('prosemirror')
+
+const initProvider = (page) => {
+    if (process.isClient) {
+        const provider = new WebrtcProvider(
+            page.room, ydoc, {
+                password: page.secret,
+                maxConns: 70 + Math.floor(Math.random() * 70),
+            }
+        )
+        return provider.awareness
+    }
+}
 
 export default class Realtime extends Extension {
     get name() {
         return 'realtime'
     }
 
+    get defaultOptions() {
+        return {
+            pageDoc: {}
+        }
+    }
     get plugins() {
+        console.log(this.options)
         return [
-            ySyncPlugin(type),
-            yCursorPlugin(provider.awareness),
+            ySyncPlugin(initYDoc(this.options.pageDoc)),
+            yCursorPlugin(initProvider(this.options.pageDoc)),
             yUndoPlugin(),
             keymap({
                 'Mod-z': undo,

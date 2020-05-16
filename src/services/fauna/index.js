@@ -16,8 +16,8 @@ export const updatePage = (dataPayload) => {
     })
 }
 
-export const getPage = () => {
-    return axios({
+export const getPage = async() => {
+    return await axios({
         method: 'post',
         url,
         headers: {

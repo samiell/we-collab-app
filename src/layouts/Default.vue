@@ -4,7 +4,7 @@
       
     </v-navigation-drawer>
     <v-app-bar app>
-      <v-toolbar-title>Live Wall</v-toolbar-title>
+      <v-toolbar-title>We Collab</v-toolbar-title>
     </v-app-bar>
     <v-content>
       <slot/>
