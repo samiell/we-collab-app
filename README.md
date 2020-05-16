@@ -10,7 +10,8 @@ built with Gridsome & Yjs & FaunaDB
 
 1. `git clone https://github.com/samiell/we-collab-app.git` to download this repo
 2. `cd we-collab-app-master` to open the folder
-3. `gridsome develop` to start a local dev server at `http://localhost:8080`
+3. `yarn install` to install packages
+4. `gridsome develop` to start a local dev server at `http://localhost:8080`
 
 
 ### 3. Features
