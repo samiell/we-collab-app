@@ -6,7 +6,7 @@ built with Gridsome & Yjs & FaunaDB
 
 `npm install --global @gridsome/cli`
 
-### 2. Create a Gridsome project
+### 2. Clone This Example
 
 1. `git clone https://github.com/samiell/we-collab-app.git` to download this repo
 2. `cd we-collab-app-master` to open the folder
