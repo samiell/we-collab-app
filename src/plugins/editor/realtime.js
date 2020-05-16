@@ -6,32 +6,6 @@ import { WebrtcProvider } from 'y-webrtc'
 import { updatePage } from '@/services/fauna/index.js'
 import { fromBase64, toBase64 } from '@aws-sdk/util-base64-browser'
 
-const ydoc = new Y.Doc()
-const initYDoc = (page) => {
-    if (
-        typeof page.content === 'string' &&
-        page.content.length !== 0
-    ) {
-        this.page.content = fromBase64(this.page.content)
-        Y.applyUpdate(ydoc, page.content)
-    }
-    ydoc.on('update', update => {
-        page.content = toBase64(Y.encodeStateAsUpdate(ydoc))
-        updatePage(page)
-    })
-    return ydoc.getXmlFragment('prosemirror')
-}
-
-const initProvider = (page) => {
-    const provider = new WebrtcProvider(
-        page.room, ydoc, {
-            password: page.secret,
-            maxConns: 70 + Math.floor(Math.random() * 70),
-        }
-    )
-    return provider.awareness
-}
-
 export default class Realtime extends Extension {
     get name() {
         return 'realtime'
@@ -39,14 +13,40 @@ export default class Realtime extends Extension {
 
     get defaultOptions() {
         return {
-            pageDoc: {}
+            pageDoc: {},
+            type: null,
+            provider: null
         }
     }
+    init() {
+        const ydoc = new Y.Doc()
+
+        if (
+            typeof this.options.pageDoc.content === 'string' &&
+            this.options.pageDoc.content.length !== 0
+        ) {
+            this.options.pageDoc.content = fromBase64(this.options.pageDoc.content)
+            Y.applyUpdate(ydoc, this.options.pageDoc.content)
+        }
+
+        ydoc.on('update', update => {
+            this.options.pageDoc.content = toBase64(Y.encodeStateAsUpdate(ydoc))
+            updatePage(this.options.pageDoc)
+        })
+
+        this.options.provider = new WebrtcProvider(
+            this.options.pageDoc.room, ydoc, {
+                password: this.options.pageDoc.secret,
+                maxConns: 40 + Math.floor(Math.random() * 30),
+            }
+        )
+        this.options.type = ydoc.getXmlFragment('prosemirror')
+    }
+
     get plugins() {
-        console.log(this.options)
         return [
-            ySyncPlugin(initYDoc(this.options.pageDoc)),
-            yCursorPlugin(initProvider(this.options.pageDoc)),
+            ySyncPlugin(this.options.type),
+            yCursorPlugin(this.options.provider.awareness),
             yUndoPlugin(),
             keymap({
                 'Mod-z': undo,
