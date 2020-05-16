@@ -155,7 +155,6 @@ export default {
                 // handle error
             } else {
                 this.page = res.data.data.getPage
-                console.log(this.page)
             }
         }
     ).catch(e => {
@@ -185,8 +184,7 @@ export default {
         ],
       })
     }
-    console.log(this.page)
-    console.log(this.editor)
+
   },
   beforeDestroy() {
     if(this.editor && process.isClient) this.editor.destroy()
